@@ -1,25 +1,25 @@
 # Screen-Capture
 
-2003年拿書上的翻譯改寫的抓圖工具
+2003年拿書上的範例改寫的抓圖工具，2020年6月5日重新編譯小改一下。
 
-##授權
+## 授權
 
 MIT License
 
-##使用說明
+## 使用說明
 
 1.使用按鍵【ScrollLock】切換視窗模式或全螢幕模式。
 
 2. 預設使用按鍵【F9】抓圖 (可以改按鍵設定)
 
 
-##目前Bug
+## 目前Bug
 
 1.視窗模式抓圖可能抓到視窗邊框外?
 
 2.存AVI檔的部分故障? 
 
-##開發工具
+## 開發工具
 
 1.Visual Studio 2019 Community edition
 
@@ -27,7 +27,7 @@ MIT License
 
 https://visualstudio.microsoft.com/zh-hant/
 
-##第三方Libarry
+## 第三方Libarry
 
 1.TonyJpegLib (它裡頭用到Independent JPEG Group的JpegLib)
 
