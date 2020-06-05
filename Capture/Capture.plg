@@ -1,0 +1,40 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: Capture - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x409 /fo"Debug/Capture.res" /d "_DEBUG" /d "_AFXDLL" "E:\MyBook\ϵͳƪ\Capture\Capture\Capture\Capture.rc"" 
+Creating temporary file "c:\windows\TEMP\RSP32E0.TMP" with contents
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Debug/Capture.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"E:\MyBook\ϵͳƪ\Capture\Capture\Capture\Capture.cpp"
+"E:\MyBook\ϵͳƪ\Capture\Capture\Capture\CaptureDlg.cpp"
+]
+Creating command line "cl.exe @c:\windows\TEMP\RSP32E0.TMP" 
+Creating temporary file "c:\windows\TEMP\RSP32E1.TMP" with contents
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Debug/Capture.pch" /Yc"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"E:\MyBook\ϵͳƪ\Capture\Capture\Capture\StdAfx.cpp"
+]
+Creating command line "cl.exe @c:\windows\TEMP\RSP32E1.TMP" 
+Creating command line "link.exe Hook.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/Capture.pdb" /debug /machine:I386 /out:"Debug/Capture.exe" /pdbtype:sept  ".\Debug\Capture.obj" ".\Debug\CaptureDlg.obj" ".\Debug\StdAfx.obj" ".\Debug\Capture.res" "
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+Capture.cpp
+CaptureDlg.cpp
+Generating Code...
+Linking...
+
+
+
+<h3>Results</h3>
+Capture.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

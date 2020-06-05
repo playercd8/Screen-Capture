@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{790d4549-2b69-4d13-8c69-24317c8757ed}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{f4464ec3-4cd8-4496-a5e6-005b324f5362}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{335ee318-cd60-4570-84c8-b57cef97c96b}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Lib">
+      <UniqueIdentifier>{c1dede2d-0a1b-4709-884e-776e4d1cbdb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lib\TonyJpegLib">
+      <UniqueIdentifier>{663fd5d9-150e-440b-96b5-cde6190630ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lib\AviFile">
+      <UniqueIdentifier>{41ba7c50-ba13-4f2d-a5a4-57523e24fec3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Capture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CaptureDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TonyJpegLib\DIB.cpp">
+      <Filter>Lib\TonyJpegLib</Filter>
+    </ClCompile>
+    <ClCompile Include="TonyJpegLib\Jpegfile.cpp">
+      <Filter>Lib\TonyJpegLib</Filter>
+    </ClCompile>
+    <ClCompile Include="TonyJpegLib\MiniJpegDec.cpp">
+      <Filter>Lib\TonyJpegLib</Filter>
+    </ClCompile>
+    <ClCompile Include="TonyJpegLib\MiniJpegEnc.cpp">
+      <Filter>Lib\TonyJpegLib</Filter>
+    </ClCompile>
+    <ClCompile Include="TonyJpegLib\TonyJpegDecoder.cpp">
+      <Filter>Lib\TonyJpegLib</Filter>
+    </ClCompile>
+    <ClCompile Include="TonyJpegLib\TonyJpegEncoder.cpp">
+      <Filter>Lib\TonyJpegLib</Filter>
+    </ClCompile>
+    <ClCompile Include="AviFile\AviFile.cpp">
+      <Filter>Lib\AviFile</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Capture.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Capture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CaptureDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TonyJpegLib\DIB.h">
+      <Filter>Lib\TonyJpegLib</Filter>
+    </ClInclude>
+    <ClInclude Include="TonyJpegLib\Jpegfile.h">
+      <Filter>Lib\TonyJpegLib</Filter>
+    </ClInclude>
+    <ClInclude Include="TonyJpegLib\MiniJpegDec.h">
+      <Filter>Lib\TonyJpegLib</Filter>
+    </ClInclude>
+    <ClInclude Include="TonyJpegLib\MiniJpegEnc.h">
+      <Filter>Lib\TonyJpegLib</Filter>
+    </ClInclude>
+    <ClInclude Include="TonyJpegLib\TonyJpegDecoder.h">
+      <Filter>Lib\TonyJpegLib</Filter>
+    </ClInclude>
+    <ClInclude Include="TonyJpegLib\TonyJpegEncoder.h">
+      <Filter>Lib\TonyJpegLib</Filter>
+    </ClInclude>
+    <ClInclude Include="AviFile\AviFile.h">
+      <Filter>Lib\AviFile</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Capture.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Capture.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+</Project>
