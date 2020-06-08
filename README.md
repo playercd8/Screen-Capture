@@ -1,6 +1,7 @@
 # Screen-Capture
 
-2003年拿書上的範例改寫的抓圖工具，2020年6月5日重新編譯小改一下。
+2003年拿書上的範例改寫的抓圖工具，2020年6月8日重新編譯小改一下。
+最初來自重慶大學出版社的2001年的【VC++開發Windows程式庫】的第79個範例。
 
 ## 授權
 
@@ -35,7 +36,7 @@ https://www.codeproject.com/Articles/3603/Classes-to-read-and-write-BMP-JPEG-and
 
 2.Independent JPEG Group的JpegLib
 
-目前使用6a版(1998年的)
+目前使用9d版(2020年的)
 
 http://www.ijg.org/
 

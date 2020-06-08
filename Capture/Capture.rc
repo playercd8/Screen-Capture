@@ -41,11 +41,11 @@ CLASS "Capture_of_Player"
 FONT 10, "細明體", 400, 0, 0x88
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,7,17,20,20
-    LTEXT           "螢幕影像抓圖工具 Capture Ver 2020.6.5.0",IDC_STATIC,47,3,161,13,SS_NOPREFIX | SS_CENTERIMAGE
+    LTEXT           "螢幕影像抓圖工具 Capture Ver 2020.6.8.0",IDC_STATIC,47,3,161,13,SS_NOPREFIX | SS_CENTERIMAGE
     LTEXT           "MIT License",IDC_STATIC,75,20,177,13,SS_CENTERIMAGE
     DEFPUSHBUTTON   "OK",IDOK,103,161,50,14,WS_GROUP
     CTEXT           "player@hotmail.com",IDC_STATIC,75,35,177,13,SS_CENTERIMAGE
-    LTEXT           "這個工具適用於以下的顯示模式...\n\t256色, \n\tHiColor 16bit之565模式,\n\tTrueColor的24bit,或32bit的顯示環境\n(抓圖的存檔都是24Bit未壓縮的BMP檔;檔名依現在時間自動編號)\n\nHiColor 16bit之555模式與16色以下模式暫不支援,敬請見諒\n\n按鍵 ScrollLock 用來切換抓圖的工作模式(全螢幕/視窗)",IDC_STATIC,7,77,245,80
+    LTEXT           "這個工具適用於以下的顯示模式...\n\t256色, \n\tHiColor 16bit之555或565模式,\n\tTrueColor的24bit,或32bit的顯示環境\n(抓圖的存檔都是24Bit未壓縮的BMP檔;檔名依現在時間自動編號)\n\n16色以下模式暫不支援,敬請見諒\n\n按鍵 ScrollLock 用來切換抓圖的工作模式(全螢幕/視窗)",IDC_STATIC,7,77,245,80
     GROUPBOX        "目前顯示模式",IDC_STATIC,7,52,245,24
     CTEXT           "Static",IDC_DispMode,15,61,229,8
 END
@@ -104,7 +104,7 @@ BEGIN
             VALUE "Comments", "螢幕影像抓圖工具"
             VALUE "CompanyName", "Player"
             VALUE "FileDescription", "Iamge Capture Tool"
-            VALUE "FileVersion", "2020.6.5.0"
+            VALUE "FileVersion", "2020.6.8.0"
             VALUE "InternalName", "Capture"
             VALUE "LegalCopyright", "MIT License"
             VALUE "OriginalFilename", "Capture.EXE"

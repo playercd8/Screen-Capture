@@ -13,20 +13,28 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JpegLib", "TonyJpegLib\Jpeg
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9EC1C35C-F65C-452C-B67A-A9F2E2B976A4}.Debug|x64.ActiveCfg = Debug|Win32
 		{9EC1C35C-F65C-452C-B67A-A9F2E2B976A4}.Debug|x86.ActiveCfg = Debug|Win32
 		{9EC1C35C-F65C-452C-B67A-A9F2E2B976A4}.Debug|x86.Build.0 = Debug|Win32
+		{9EC1C35C-F65C-452C-B67A-A9F2E2B976A4}.Release|x64.ActiveCfg = Release|Win32
 		{9EC1C35C-F65C-452C-B67A-A9F2E2B976A4}.Release|x86.ActiveCfg = Release|Win32
 		{9EC1C35C-F65C-452C-B67A-A9F2E2B976A4}.Release|x86.Build.0 = Release|Win32
+		{BD55CE3C-B393-416B-BA5D-1CB1838C1293}.Debug|x64.ActiveCfg = Debug|Win32
 		{BD55CE3C-B393-416B-BA5D-1CB1838C1293}.Debug|x86.ActiveCfg = Debug|Win32
 		{BD55CE3C-B393-416B-BA5D-1CB1838C1293}.Debug|x86.Build.0 = Debug|Win32
+		{BD55CE3C-B393-416B-BA5D-1CB1838C1293}.Release|x64.ActiveCfg = Release|Win32
 		{BD55CE3C-B393-416B-BA5D-1CB1838C1293}.Release|x86.ActiveCfg = Release|Win32
 		{BD55CE3C-B393-416B-BA5D-1CB1838C1293}.Release|x86.Build.0 = Release|Win32
+		{43FE72A5-F3A8-4985-A21A-411213D7BF0D}.Debug|x64.ActiveCfg = Debug|Win32
 		{43FE72A5-F3A8-4985-A21A-411213D7BF0D}.Debug|x86.ActiveCfg = Debug|Win32
 		{43FE72A5-F3A8-4985-A21A-411213D7BF0D}.Debug|x86.Build.0 = Debug|Win32
+		{43FE72A5-F3A8-4985-A21A-411213D7BF0D}.Release|x64.ActiveCfg = Release|Win32
 		{43FE72A5-F3A8-4985-A21A-411213D7BF0D}.Release|x86.ActiveCfg = Release|Win32
 		{43FE72A5-F3A8-4985-A21A-411213D7BF0D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection

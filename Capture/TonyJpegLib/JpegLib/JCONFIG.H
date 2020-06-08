@@ -1,25 +1,6 @@
-////////////////////////////////////////////////////////////////////////
-//
-//	Note : this file is included as part of the Smaller Animals Software
-//	JpegFile package. Though this file has not been modified from it's
-//	original IJG 6a form, it is not the responsibility on the Independent
-//	JPEG Group to answer questions regarding this code.
-//
-//	Any questions you have about this code should be addressed to :
-//
-//	CHRISDL@PAGESZ.NET	- the distributor of this package.
-//
-//	Remember, by including this code in the JpegFile package, Smaller
-//	Animals Software assumes all responsibilities for answering questions
-//	about it. If we (SA Software) can't answer your questions ourselves, we
-//	will direct you to people who can.
-//
-//	Thanks, CDL.
-//
-////////////////////////////////////////////////////////////////////////
-
-/* jconfig.vc --- jconfig.h for Microsoft Visual C++ on Windows 95 or NT. */
-/* see jconfig.doc for explanations */
+/* jconfig.vc --- jconfig.h for Microsoft Visual C++ on Windows 9x or NT. */
+/* This file also works for Borland C++ 32-bit (bcc32) on Windows 9x or NT. */
+/* see jconfig.txt for explanations */
 
 #define HAVE_PROTOTYPES
 #define HAVE_UNSIGNED_CHAR
@@ -35,11 +16,18 @@
 #undef NEED_SHORT_EXTERNAL_NAMES
 #undef INCOMPLETE_TYPES_BROKEN
 
-/* Define "boolean" as unsigned char, not int, per Windows custom */
+/* Define "boolean" as unsigned char, not enum, per Windows custom */
 #ifndef __RPCNDR_H__		/* don't conflict if rpcndr.h already read */
 typedef unsigned char boolean;
 #endif
+#ifndef FALSE			/* in case these macros already exist */
+#define FALSE	0		/* values of boolean */
+#endif
+#ifndef TRUE
+#define TRUE	1
+#endif
 #define HAVE_BOOLEAN		/* prevent jmorecfg.h from redefining it */
+
 
 #ifdef JPEG_INTERNALS
 

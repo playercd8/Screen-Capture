@@ -154,6 +154,7 @@ CCaptureDlg::CCaptureDlg(CWnd* pParent /*=NULL*/)
 void CCaptureDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+
 	//{{AFX_DATA_MAP(CCaptureDlg)
 	DDX_Control(pDX, IDC_SaveFileFormat, m_SaveFileFormat);
 	DDX_Control(pDX, IDC_Quality, m_Quality);
@@ -164,7 +165,7 @@ void CCaptureDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_SHIFT, m_bShift);
 	DDX_Text(pDX, IDC_NUMBER, m_Number);
 	//}}AFX_DATA_MAP
-	//DDX_Text(pDX, IDC_PATH, m_Path);
+
 	{
 		CString sPath = m_Path;
 
@@ -568,7 +569,7 @@ void CCaptureDlg::CaptureBmp(void)
 	CDC dc;
 	int Width;
 	int Height;
-	RECT  WndRect;
+	RECT WndRect;
 
 	//棵辊
 	dc.CreateDC(lpszDrawDeviceName, NULL, NULL, NULL);
@@ -598,8 +599,6 @@ void CCaptureDlg::CaptureBmp(void)
 			WndRect.bottom = Height;
 
 		Width = (WndRect.right - WndRect.left);
-		if ((Width % 4) != 0)
-			Width = ((Width >> 2) + 1) << 2;
 		if (Width > GetSystemMetrics(SM_CXSCREEN))
 			Width = GetSystemMetrics(SM_CXSCREEN);
 		Height = WndRect.bottom - WndRect.top;
@@ -621,7 +620,7 @@ void CCaptureDlg::CaptureBmp(void)
 	bm.GetBitmap(&btm);
 	DWORD size = btm.bmWidthBytes * btm.bmHeight;
 	LPSTR lpData = (LPSTR)GlobalAllocPtr(GPTR, size);
-	/////////////////////////////////////////////
+
 	BITMAPINFOHEADER bih;
 	bih.biBitCount = btm.bmBitsPixel;
 	bih.biClrImportant = 0;
@@ -632,32 +631,26 @@ void CCaptureDlg::CaptureBmp(void)
 	bih.biSize = sizeof(BITMAPINFOHEADER);
 	bih.biSizeImage = size;
 	bih.biWidth = btm.bmWidth;
-	bih.biXPelsPerMeter = 3780;//0;
-	bih.biYPelsPerMeter = 3780;//0;
-///////////////////////////////////
+	bih.biXPelsPerMeter = 3780;
+	bih.biYPelsPerMeter = 3780;
+
 	if (btm.bmBitsPixel > 16)
 	{
 		GetDIBits(dc, bm, 0, bih.biHeight, lpData, (BITMAPINFO*)&bih, DIB_RGB_COLORS);
 	}
 	else
 	{
-		//bih.biClrImportant = 256;
-		//bih.biClrUsed = 256;
 		bm.GetBitmapBits(size, lpData);
-
-		//iRet = GetDIBits(dc, bm, 0, (bih.biHeight-1), lpData, (BITMAPINFO*)&bih, DIB_PAL_COLORS);
 	}
-	//	bm.GetBitmapBits(size,lpData);	//此函数在处理5-5-5模式的16位色下会出现颜色混乱
-	//////////////////////////////
 
 	BITMAPFILEHEADER bfh;
 	bfh.bfReserved1 = bfh.bfReserved2 = 0;
 	bfh.bfType = ((WORD)('M' << 8) | 'B');
-	bfh.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + size;//54+size;
-	bfh.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);//54;
+	bfh.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + size;
+	bfh.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
 
 	//锣タ
-	int size2 = 0;
+	//int size2 = 0;
 	LPBYTE lpData2 = NULL;
 
 	//16︹家Α
@@ -671,7 +664,6 @@ void CCaptureDlg::CaptureBmp(void)
 	else if (btm.bmBitsPixel == 8)
 	{
 		bih.biBitCount = 24;
-		//bih.biSizeImage = size * 3;
 		int bmWidthBytes2 = btm.bmWidth * 3;
 		if ((bmWidthBytes2 % 4) != 0) {
 			bmWidthBytes2 = ((bmWidthBytes2 / 4) + 1) * 4;
@@ -679,35 +671,31 @@ void CCaptureDlg::CaptureBmp(void)
 		bih.biSizeImage = bmWidthBytes2 * btm.bmHeight;
 
 		lpData2 = new(BYTE[bih.biSizeImage]);
-		size2 = bih.biSizeImage;
 		bih.biCompression = BI_RGB;
 
-		BYTE R, G, B, Color;
-		LPBYTE	chBuffer = (LPBYTE)lpData,
+		BYTE Color;
+		LPBYTE chBuffer = (LPBYTE)lpData,
 			chRgbBuffer = lpData2;
-		int		ColorIndex = 0,
+		int	ColorIndex = 0,
 			RgbIndex = 0;
 
 		PALETTEENTRY chColorTable[256];
-		::GetSystemPaletteEntries(dc.m_hDC,
-			0,
-			256,
-			chColorTable);
+		::GetSystemPaletteEntries(dc.m_hDC, 0, 256, chColorTable);
 
-		for (int y = (btm.bmHeight - 1); y > 0; y--)
+		for (int y = 0; y < btm.bmHeight; y++)
 		{
 			ColorIndex = btm.bmWidthBytes * y;
 			RgbIndex = bmWidthBytes2 * y;
 			for (int x = 0; x < btm.bmWidth; x++)
 			{
 				Color = chBuffer[ColorIndex];
-				B = chColorTable[Color].peBlue;
-				G = chColorTable[Color].peGreen;
-				R = chColorTable[Color].peRed;
 
-				chRgbBuffer[RgbIndex] = B;
-				chRgbBuffer[RgbIndex + 1] = G;
-				chRgbBuffer[RgbIndex + 2] = R;
+				//B
+				chRgbBuffer[RgbIndex] = chColorTable[Color].peBlue;
+				//G
+				chRgbBuffer[RgbIndex + 1] = chColorTable[Color].peGreen;
+				//R
+				chRgbBuffer[RgbIndex + 2] = chColorTable[Color].peRed;
 
 				ColorIndex++;
 				RgbIndex += 3;
@@ -719,7 +707,6 @@ void CCaptureDlg::CaptureBmp(void)
 	else if (btm.bmBitsPixel == 16)
 	{
 		bih.biBitCount = 24;
-		//bih.biSizeImage = size / 2 * 3;
 		int bmWidthBytes2 = btm.bmWidth * 3;
 		if ((bmWidthBytes2 % 4) != 0) {
 			bmWidthBytes2 = ((bmWidthBytes2 / 4) + 1) * 4;
@@ -727,13 +714,12 @@ void CCaptureDlg::CaptureBmp(void)
 		bih.biSizeImage = bmWidthBytes2 * btm.bmHeight;
 
 		lpData2 = new(BYTE[bih.biSizeImage]);
-		size2 = bih.biSizeImage;
 		bih.biCompression = BI_RGB;
 
-		WORD hiColor, R, G, B;
-		LPBYTE	chBuffer = (LPBYTE)lpData,
+		WORD hiColor;
+		LPBYTE chBuffer = (LPBYTE)lpData,
 			chRgbBuffer = lpData2;
-		int		HiColorIndex = 0,
+		int	HiColorIndex = 0,
 			RgbIndex = 0;
 
 		BOOL bIsHiColor555 = TRUE;
@@ -754,7 +740,7 @@ void CCaptureDlg::CaptureBmp(void)
 				lpdd->GetDisplayMode(&ddsd);
 				{
 					PixelFormat = ddsd.ddpfPixelFormat;
-					if (PixelFormat.dwGBitMask == 0x07e0)//.dwRGBBitCount == 16)
+					if (PixelFormat.dwGBitMask == 0x07e0)
 					{
 						bIsHiColor555 = FALSE;
 					}
@@ -766,8 +752,8 @@ void CCaptureDlg::CaptureBmp(void)
 
 		if (bIsHiColor555 == TRUE)
 		{
-			//555
-			for (int y = (btm.bmHeight - 1); y > 0; y--)
+			//555 mode
+			for (int y = 0; y < btm.bmHeight; y++)
 			{
 				HiColorIndex = btm.bmWidthBytes * y;
 				RgbIndex = bmWidthBytes2 * y;
@@ -776,13 +762,12 @@ void CCaptureDlg::CaptureBmp(void)
 				{
 					hiColor = (WORD)chBuffer[HiColorIndex] + (WORD)(chBuffer[HiColorIndex + 1] << 8);
 
-					R = (hiColor & 0x7C00) >> 7;
-					G = (hiColor & 0x03E0) >> 2;
-					B = (hiColor & 0x001F) << 3;
-
-					chRgbBuffer[RgbIndex] = (BYTE)B;
-					chRgbBuffer[RgbIndex + 1] = (BYTE)G;
-					chRgbBuffer[RgbIndex + 2] = (BYTE)R;
+					//B
+					chRgbBuffer[RgbIndex] = (BYTE)((hiColor & 0x001F) << 3);
+					//G
+					chRgbBuffer[RgbIndex + 1] = (BYTE)((hiColor & 0x03E0) >> 2);
+					//R
+					chRgbBuffer[RgbIndex + 2] = (BYTE)((hiColor & 0x7C00) >> 7);
 
 					HiColorIndex += 2;
 					RgbIndex += 3;
@@ -791,8 +776,8 @@ void CCaptureDlg::CaptureBmp(void)
 		}
 		else
 		{
-			//565
-			for (int y = (btm.bmHeight - 1); y > 0; y--)
+			//565 mode
+			for (int y = 0; y < btm.bmHeight; y++)
 			{
 				HiColorIndex = btm.bmWidthBytes * y;
 				RgbIndex = bmWidthBytes2 * y;
@@ -801,13 +786,12 @@ void CCaptureDlg::CaptureBmp(void)
 				{
 					hiColor = (WORD)chBuffer[HiColorIndex] + (WORD)(chBuffer[HiColorIndex + 1] << 8);
 
-					R = (hiColor & 0xF800) >> 8;
-					G = (hiColor & 0x07E0) >> 3;
-					B = (hiColor & 0x001F) << 3;
-
-					chRgbBuffer[RgbIndex] = (BYTE)B;
-					chRgbBuffer[RgbIndex + 1] = (BYTE)G;
-					chRgbBuffer[RgbIndex + 2] = (BYTE)R;
+					//B
+					chRgbBuffer[RgbIndex] = (BYTE)((hiColor & 0x001F) << 3);
+					//G
+					chRgbBuffer[RgbIndex + 1] = (BYTE)((hiColor & 0x07E0) >> 3);
+					//R
+					chRgbBuffer[RgbIndex + 2] = (BYTE)((hiColor & 0xF800) >> 8);
 
 					HiColorIndex += 2;
 					RgbIndex += 3;
@@ -823,7 +807,6 @@ void CCaptureDlg::CaptureBmp(void)
 		bih.biSizeImage = size;
 		lpData2 = new(BYTE[bih.biSizeImage]);
 		::memcpy(lpData2, lpData, bih.biSizeImage);
-		size2 = bih.biSizeImage;
 		bih.biCompression = BI_RGB;
 	}
 
@@ -831,7 +814,6 @@ void CCaptureDlg::CaptureBmp(void)
 	else if (btm.bmBitsPixel == 32)
 	{
 		bih.biBitCount = 24;
-		//bih.biSizeImage = size / 4 * 3;
 		int bmWidthBytes2 = btm.bmWidth * 3;
 		if ((bmWidthBytes2 % 4) != 0) {
 			bmWidthBytes2 = ((bmWidthBytes2 / 4) + 1) * 4;
@@ -839,10 +821,9 @@ void CCaptureDlg::CaptureBmp(void)
 		bih.biSizeImage = bmWidthBytes2 * btm.bmHeight;
 
 		lpData2 = new(BYTE[bih.biSizeImage]);
-		size2 = bih.biSizeImage;
 		bih.biCompression = BI_RGB;
 
-		LPBYTE	chBuffer = (LPBYTE)lpData,
+		LPBYTE chBuffer = (LPBYTE)lpData,
 			chRgbBuffer = lpData2;
 		int	ColorIndex = 0,
 			RgbIndex = 0;
@@ -980,37 +961,20 @@ void CCaptureDlg::SaveJppFile(void)
 
 void CCaptureDlg::SaveAviFile(void)
 {
-	//0.锣瓜
-	//{
-	int Width;
-	int Height;
-
 	//棵辊
-
-	Width = GetSystemMetrics(SM_CXSCREEN);
-	Height = GetSystemMetrics(SM_CYSCREEN);
+	int Width = GetSystemMetrics(SM_CXSCREEN);
+	int Height = GetSystemMetrics(SM_CYSCREEN);
 
 	LPCTSTR lpszDrawDeviceName = "DISPLAY";
 	CDC dc;
-	//棵辊
 	dc.CreateDC(lpszDrawDeviceName, NULL, NULL, NULL);
 
 	HBITMAP hBackBitmap;
-	//HBITMAP hBackOldBitmap;//=(HBITMAP)
-	//LPBYTE lpData = new (BYTE[320*240*4]);
-
 	CBitmap bmp;
-	//bmp.CreateBitmap(320,240,1,32,lpData);
-	//hBackBitmap = (HBITMAP) bmp.GetSafeHandle();
-
 	CDC dc2;
 	dc2.CreateCompatibleDC(&dc);
-	//hBackOldBitmap = (HBITMAP) dc2.SelectObject(hBackBitmap);
-
-	//m_dib.Draw(&dc2);
-	//dc2.SelectObject(hBackOldBitmap);
-
 	bmp.CreateCompatibleBitmap(&dc, Width, Height);
+
 	CDC tdc;
 	tdc.CreateCompatibleDC(&dc);
 	CBitmap* pOld = tdc.SelectObject(&bmp);
@@ -1018,18 +982,8 @@ void CCaptureDlg::SaveAviFile(void)
 	tdc.BitBlt(0, 0, Width, Height, &dc, 0, 0, SRCCOPY);
 	tdc.SelectObject(pOld);
 
-	//hBackBitmap = (HBITMAP) bmp.GetSafeHandle();
-
-	//bmp.CreateBitmap(
-	//	320,//m_dib.m_width,
-	//	240,//m_dib.m_height,
-	//			1,
-	//			32,
-	//			m_dib.GetDibBits());
-
 	hBackBitmap = (HBITMAP)bmp.GetSafeHandle();
 
-	//}
 
 	if (m_pAvi == NULL)
 	{
