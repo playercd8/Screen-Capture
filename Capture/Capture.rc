@@ -85,7 +85,7 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2020,6,5,0
+ FILEVERSION 2020,6,9,0
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -104,7 +104,7 @@ BEGIN
             VALUE "Comments", "螢幕影像抓圖工具"
             VALUE "CompanyName", "Player"
             VALUE "FileDescription", "Iamge Capture Tool"
-            VALUE "FileVersion", "2020.6.8.0"
+            VALUE "FileVersion", "2020.6.9.0"
             VALUE "InternalName", "Capture"
             VALUE "LegalCopyright", "MIT License"
             VALUE "OriginalFilename", "Capture.EXE"
@@ -191,6 +191,10 @@ BEGIN
 
     IDC_SaveFileFormat, 0x403, 36, 0
 0xcab0, 0x65b5, 0xcfb9, 0xc9c0, 0xd2bc, 0xa1a6, 0x5641, 0xc049, 0x28c9, 
+0x75a5, 0xe4a4, 0xa9b4, 0xfea5, 0xc3bf, 0xf5b9, 0xd2bc, 0xa1a6, 0x0029, 
+
+    IDC_SaveFileFormat, 0x403, 36, 0
+0xcab0, 0x65b5, 0xcfb9, 0xc9c0, 0xd2bc, 0xa1a6, 0x4d57, 0xc056, 0x28c9, 
 0x75a5, 0xe4a4, 0xa9b4, 0xfea5, 0xc3bf, 0xf5b9, 0xd2bc, 0xa1a6, 0x0029, 
 
     0

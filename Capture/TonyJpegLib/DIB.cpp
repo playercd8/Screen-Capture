@@ -44,6 +44,25 @@ CDib::~CDib()
 		::FreeLibrary(m_J2kDll);
 }
 
+BITMAP CDib::GetBitmap()
+{
+	BITMAP ret;
+	if (m_pDib != NULL)
+	{
+		ret.bmType= 0;
+		ret.bmWidth = m_pBIH->biWidth;
+		ret.bmHeight = m_pBIH->biHeight;
+		ret.bmWidthBytes = m_pBIH->biWidth * 3;
+		if ((ret.bmWidthBytes % 4) != 0) {
+			ret.bmWidthBytes = ((ret.bmWidthBytes / 4) + 1) * 4;
+		}
+		ret.bmPlanes = m_pBIH->biPlanes;
+		ret.bmBitsPixel = m_pBIH->biBitCount;
+		ret.bmBits = m_pDibBits;
+	}
+	return ret;
+}
+
 void CDib::SetDIBits(PBITMAPFILEHEADER pbfh, PBITMAPINFOHEADER pbih, LPBYTE lpData)
 {
 	if (m_pDib != NULL)

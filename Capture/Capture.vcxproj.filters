@@ -19,8 +19,8 @@
     <Filter Include="Lib\TonyJpegLib">
       <UniqueIdentifier>{663fd5d9-150e-440b-96b5-cde6190630ab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Lib\AviFile">
-      <UniqueIdentifier>{41ba7c50-ba13-4f2d-a5a4-57523e24fec3}</UniqueIdentifier>
+    <Filter Include="Lib\CreateMovie">
+      <UniqueIdentifier>{88ba1679-c499-4ca4-80f2-e70c6be9f1a0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -51,8 +51,11 @@
     <ClCompile Include="TonyJpegLib\TonyJpegEncoder.cpp">
       <Filter>Lib\TonyJpegLib</Filter>
     </ClCompile>
-    <ClCompile Include="AviFile\AviFile.cpp">
-      <Filter>Lib\AviFile</Filter>
+    <ClCompile Include="CreateMovie\AviFile.cpp">
+      <Filter>Lib\CreateMovie</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateMovie\wmvFile.cpp">
+      <Filter>Lib\CreateMovie</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -91,8 +94,14 @@
     <ClInclude Include="TonyJpegLib\TonyJpegEncoder.h">
       <Filter>Lib\TonyJpegLib</Filter>
     </ClInclude>
-    <ClInclude Include="AviFile\AviFile.h">
-      <Filter>Lib\AviFile</Filter>
+    <ClInclude Include="CreateMovie\AviFile.h">
+      <Filter>Lib\CreateMovie</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateMovie\wmvFile.h">
+      <Filter>Lib\CreateMovie</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateMovie\StdAfx.h">
+      <Filter>Lib\CreateMovie</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

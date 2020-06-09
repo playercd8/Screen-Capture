@@ -12,6 +12,8 @@ public:
 	CDib();
 	~CDib();
 
+	BITMAP GetBitmap();
+
 	BOOL Load(const char*);
 	BOOL Save(const char*);
 	BOOL Draw(CDC*, int nX = 0, int nY = 0, int nWidth = -1, int nHeight = -1);

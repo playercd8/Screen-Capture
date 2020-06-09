@@ -20,9 +20,10 @@ static char THIS_FILE[] = __FILE__;
 BOOL __declspec(dllexport)__stdcall  AddHotkey(HWND, UCHAR key, UCHAR mask);
 BOOL __declspec(dllexport)__stdcall  DeleteHotkey(HWND, UCHAR key, UCHAR mask);
 
+UCHAR Key_Table[] = { 0x78,0x79,0x7a,0x7b,0x6a,0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39 };
+
 /////////////////////////////////////////////////////////////////////////////
 // CAboutDlg dialog used for App About
-UCHAR Key_Table[] = { 0x78,0x79,0x7a,0x7b,0x6a,0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39 };
 class CAboutDlg : public CDialog
 {
 public:
@@ -62,7 +63,7 @@ CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
 	LPDIRECTDRAW4		lpdd = NULL;
 	DDSURFACEDESC2		ddsd;
 	LPDIRECTDRAWSURFACE4 lpdds_primary = NULL;
-	DDPIXELFORMAT PixelFormat;
+	DDPIXELFORMAT		 PixelFormat;
 	ZeroMemory(&PixelFormat, sizeof(DDPIXELFORMAT));
 	ZeroMemory(&ddsd, sizeof(DDSURFACEDESC2));
 
@@ -70,7 +71,7 @@ CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
 	{
 		if (lpdd_temp->QueryInterface(IID_IDirectDraw4, (LPVOID*)&lpdd) == DD_OK)
 		{
-			memset(&ddsd, 0, sizeof(DDSURFACEDESC2));
+			ZeroMemory(&ddsd, sizeof(DDSURFACEDESC2));
 			ddsd.dwSize = sizeof(DDSURFACEDESC2);
 			lpdd->GetDisplayMode(&ddsd);
 			PixelFormat = ddsd.ddpfPixelFormat;
@@ -117,6 +118,7 @@ CCaptureDlg::CCaptureDlg(CWnd* pParent /*=NULL*/)
 {
 	//{{AFX_DATA_INIT(CCaptureDlg)
 	m_pAvi = NULL;
+	m_pWmv = NULL;
 	m_WM_Message = NULL;
 	m_nTimerID = NULL;
 
@@ -403,6 +405,13 @@ BOOL CCaptureDlg::PreTranslateMessage(MSG* pMsg)
 	return CDialog::PreTranslateMessage(pMsg);
 }
 
+/// <summary>
+/// WindowProc
+/// </summary>
+/// <param name="message"></param>
+/// <param name="wParam"></param>
+/// <param name="lParam"></param>
+/// <returns></returns>
 LRESULT CCaptureDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if ((message == WM_HOTKEY) && (lParam == WM_KEYDOWN))
@@ -426,7 +435,9 @@ LRESULT CCaptureDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		case 3:
 			SaveAviFile();
 			break;
-
+		case 4:
+			SaveWmvFile();
+			break;
 		default:
 			break;
 		}
@@ -605,7 +616,6 @@ void CCaptureDlg::CaptureBmp(void)
 	}
 
 	CBitmap bm;
-
 	bm.CreateCompatibleBitmap(&dc, Width, Height);
 
 	CDC tdc;
@@ -613,13 +623,12 @@ void CCaptureDlg::CaptureBmp(void)
 
 	CBitmap* pOld = tdc.SelectObject(&bm);
 	tdc.BitBlt(0, 0, Width, Height, &dc, WndRect.left, WndRect.top, SRCCOPY);
-
 	tdc.SelectObject(pOld);
 
 	BITMAP btm;
 	bm.GetBitmap(&btm);
 	DWORD size = btm.bmWidthBytes * btm.bmHeight;
-	LPSTR lpData = (LPSTR)GlobalAllocPtr(GPTR, size);
+	LPBYTE lpData = (LPBYTE)GlobalAllocPtr(GPTR, size);
 
 	BITMAPINFOHEADER bih;
 	bih.biBitCount = btm.bmBitsPixel;
@@ -650,17 +659,16 @@ void CCaptureDlg::CaptureBmp(void)
 	bfh.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
 
 	//轉值修正
-	//int size2 = 0;
 	LPBYTE lpData2 = NULL;
 
-	//16色模式
+	//TODO: 16色模式
 	if (btm.bmBitsPixel < 8)
 	{
 		GlobalFreePtr(lpData);
 		return;
 	}
 
-	//256色模式
+	//TODO: 256色模式
 	else if (btm.bmBitsPixel == 8)
 	{
 		bih.biBitCount = 24;
@@ -674,7 +682,7 @@ void CCaptureDlg::CaptureBmp(void)
 		bih.biCompression = BI_RGB;
 
 		BYTE Color;
-		LPBYTE chBuffer = (LPBYTE)lpData,
+		LPBYTE chBuffer = lpData,
 			chRgbBuffer = lpData2;
 		int	ColorIndex = 0,
 			RgbIndex = 0;
@@ -684,8 +692,6 @@ void CCaptureDlg::CaptureBmp(void)
 
 		for (int y = 0; y < btm.bmHeight; y++)
 		{
-			ColorIndex = btm.bmWidthBytes * y;
-			RgbIndex = bmWidthBytes2 * y;
 			for (int x = 0; x < btm.bmWidth; x++)
 			{
 				Color = chBuffer[ColorIndex];
@@ -700,10 +706,15 @@ void CCaptureDlg::CaptureBmp(void)
 				ColorIndex++;
 				RgbIndex += 3;
 			}
+
+			chBuffer += btm.bmWidthBytes,
+			chRgbBuffer += bmWidthBytes2;
+			ColorIndex = 0;
+			RgbIndex = 0;
 		}
 	}
 
-	//16bit HiColor模式 (555與565)
+	//TODO: 16bit HiColor模式 (555與565)
 	else if (btm.bmBitsPixel == 16)
 	{
 		bih.biBitCount = 24;
@@ -717,7 +728,7 @@ void CCaptureDlg::CaptureBmp(void)
 		bih.biCompression = BI_RGB;
 
 		WORD hiColor;
-		LPBYTE chBuffer = (LPBYTE)lpData,
+		LPBYTE chBuffer = lpData,
 			chRgbBuffer = lpData2;
 		int	HiColorIndex = 0,
 			RgbIndex = 0;
@@ -734,7 +745,7 @@ void CCaptureDlg::CaptureBmp(void)
 		{
 			if (lpdd_temp->QueryInterface(IID_IDirectDraw4, (LPVOID*)&lpdd) == DD_OK)
 			{
-				memset(&ddsd, 0, sizeof(DDSURFACEDESC2));
+				ZeroMemory(&ddsd, sizeof(DDSURFACEDESC2));
 				ddsd.dwSize = sizeof(DDSURFACEDESC2);
 
 				lpdd->GetDisplayMode(&ddsd);
@@ -752,55 +763,59 @@ void CCaptureDlg::CaptureBmp(void)
 
 		if (bIsHiColor555 == TRUE)
 		{
-			//555 mode
+			// 555 mode
 			for (int y = 0; y < btm.bmHeight; y++)
 			{
-				HiColorIndex = btm.bmWidthBytes * y;
-				RgbIndex = bmWidthBytes2 * y;
-
 				for (int x = 0; x < btm.bmWidth; x++)
 				{
-					hiColor = (WORD)chBuffer[HiColorIndex] + (WORD)(chBuffer[HiColorIndex + 1] << 8);
+					hiColor = WORD(chBuffer[HiColorIndex]) | WORD(chBuffer[HiColorIndex + 1] << 8);
 
 					//B
-					chRgbBuffer[RgbIndex] = (BYTE)((hiColor & 0x001F) << 3);
+					chRgbBuffer[RgbIndex] = BYTE((hiColor & 0x001F) << 3);
 					//G
-					chRgbBuffer[RgbIndex + 1] = (BYTE)((hiColor & 0x03E0) >> 2);
+					chRgbBuffer[RgbIndex + 1] = BYTE((hiColor & 0x03E0) >> 2);
 					//R
-					chRgbBuffer[RgbIndex + 2] = (BYTE)((hiColor & 0x7C00) >> 7);
+					chRgbBuffer[RgbIndex + 2] = BYTE((hiColor & 0x7C00) >> 7);
 
 					HiColorIndex += 2;
 					RgbIndex += 3;
 				}
+
+				chBuffer += btm.bmWidthBytes,
+				chRgbBuffer += bmWidthBytes2;
+				HiColorIndex = 0;
+				RgbIndex = 0;
 			}
 		}
 		else
 		{
-			//565 mode
+			// 565 mode
 			for (int y = 0; y < btm.bmHeight; y++)
 			{
-				HiColorIndex = btm.bmWidthBytes * y;
-				RgbIndex = bmWidthBytes2 * y;
-
 				for (int x = 0; x < btm.bmWidth; x++)
 				{
-					hiColor = (WORD)chBuffer[HiColorIndex] + (WORD)(chBuffer[HiColorIndex + 1] << 8);
+					hiColor = WORD(chBuffer[HiColorIndex]) | WORD(chBuffer[HiColorIndex + 1] << 8);
 
 					//B
-					chRgbBuffer[RgbIndex] = (BYTE)((hiColor & 0x001F) << 3);
+					chRgbBuffer[RgbIndex] = BYTE((hiColor & 0x001F) << 3);
 					//G
-					chRgbBuffer[RgbIndex + 1] = (BYTE)((hiColor & 0x07E0) >> 3);
+					chRgbBuffer[RgbIndex + 1] = BYTE((hiColor & 0x07E0) >> 3);
 					//R
-					chRgbBuffer[RgbIndex + 2] = (BYTE)((hiColor & 0xF800) >> 8);
+					chRgbBuffer[RgbIndex + 2] = BYTE((hiColor & 0xF800) >> 8);
 
 					HiColorIndex += 2;
 					RgbIndex += 3;
 				}
+
+				chBuffer += btm.bmWidthBytes,
+				chRgbBuffer += bmWidthBytes2;
+				HiColorIndex = 0;
+				RgbIndex = 0;
 			}
 		}
 	}
 
-	// 24Bit True Color 模式
+	//TODO: 24Bit True Color 模式
 	else if (btm.bmBitsPixel == 24)
 	{
 		bih.biBitCount = 24;
@@ -810,7 +825,7 @@ void CCaptureDlg::CaptureBmp(void)
 		bih.biCompression = BI_RGB;
 	}
 
-	// 32Bit True Color 模式
+	//TODO: 32Bit True Color 模式
 	else if (btm.bmBitsPixel == 32)
 	{
 		bih.biBitCount = 24;
@@ -823,16 +838,13 @@ void CCaptureDlg::CaptureBmp(void)
 		lpData2 = new(BYTE[bih.biSizeImage]);
 		bih.biCompression = BI_RGB;
 
-		LPBYTE chBuffer = (LPBYTE)lpData,
+		LPBYTE chBuffer = lpData,
 			chRgbBuffer = lpData2;
 		int	ColorIndex = 0,
 			RgbIndex = 0;
 
 		for (int y = 0; y < btm.bmHeight; y++)
 		{
-			ColorIndex = btm.bmWidthBytes * y;
-			RgbIndex = bmWidthBytes2 * y;
-
 			for (int x = 0; x < btm.bmWidth; x++)
 			{
 				//B
@@ -845,6 +857,11 @@ void CCaptureDlg::CaptureBmp(void)
 				ColorIndex += 4;
 				RgbIndex += 3;
 			}
+
+			chBuffer += btm.bmWidthBytes,
+			chRgbBuffer += bmWidthBytes2;
+			ColorIndex = 0;
+			RgbIndex = 0;
 		}
 	}
 
@@ -855,6 +872,10 @@ void CCaptureDlg::CaptureBmp(void)
 	GlobalFreePtr(lpData);
 }
 
+/// <summary>
+/// 儲存成 .bmp 檔
+/// </summary>
+/// <param name=""></param>
 void CCaptureDlg::SaveBmpFile(void)
 {
 	CString name;
@@ -880,6 +901,10 @@ void CCaptureDlg::SaveBmpFile(void)
 	UpdateData(FALSE);
 }
 
+/// <summary>
+/// 儲存成 .jpg 檔
+/// </summary>
+/// <param name=""></param>
 void CCaptureDlg::SaveJpgFile(void)
 {
 	CString name;
@@ -907,6 +932,10 @@ void CCaptureDlg::SaveJpgFile(void)
 	UpdateData(FALSE);
 }
 
+/// <summary>
+/// 儲存成 .jp2 檔
+/// </summary>
+/// <param name=""></param>
 void CCaptureDlg::SaveJp2File(void)
 {
 	CString name;
@@ -934,6 +963,10 @@ void CCaptureDlg::SaveJp2File(void)
 	UpdateData(FALSE);
 }
 
+/// <summary>
+/// 儲存成 .jpp 檔
+/// </summary>
+/// <param name=""></param>
 void CCaptureDlg::SaveJppFile(void)
 {
 	CString name;
@@ -959,6 +992,10 @@ void CCaptureDlg::SaveJppFile(void)
 	UpdateData(FALSE);
 }
 
+/// <summary>
+/// 儲存成 .avi 檔
+/// </summary>
+/// <param name=""></param>
 void CCaptureDlg::SaveAviFile(void)
 {
 	//全螢幕
@@ -971,19 +1008,17 @@ void CCaptureDlg::SaveAviFile(void)
 
 	HBITMAP hBackBitmap;
 	CBitmap bmp;
-	CDC dc2;
-	dc2.CreateCompatibleDC(&dc);
 	bmp.CreateCompatibleBitmap(&dc, Width, Height);
 
 	CDC tdc;
 	tdc.CreateCompatibleDC(&dc);
-	CBitmap* pOld = tdc.SelectObject(&bmp);
 
+	CBitmap* pOld = tdc.SelectObject(&bmp);
 	tdc.BitBlt(0, 0, Width, Height, &dc, 0, 0, SRCCOPY);
 	tdc.SelectObject(pOld);
 
 	hBackBitmap = (HBITMAP)bmp.GetSafeHandle();
-
+	
 
 	if (m_pAvi == NULL)
 	{
@@ -993,7 +1028,6 @@ void CCaptureDlg::SaveAviFile(void)
 		::GetLocalTime(&st);
 
 		nCount = 1;
-
 		m_filecount++;
 
 		name.Format("%02i%02i%02i_%02i%02i%02i(%d).avi",
@@ -1010,8 +1044,8 @@ void CCaptureDlg::SaveAviFile(void)
 		m_pAvi = new CAviFile(name);
 
 		m_pAvi->AppendNewFrame(hBackBitmap);
-
-		m_Number.Format("自動錄製 Avi (畫格 %d)", nCount);
+		
+		m_Number.Format("自動錄製 Ani (畫格 %d)", nCount);
 		UpdateData(FALSE);
 
 		m_nTimerID = SetTimer(1000, 1000, NULL);
@@ -1029,28 +1063,107 @@ void CCaptureDlg::SaveAviFile(void)
 	{
 		//第2次按下抓圖熱鍵, 結束;
 		if (m_nTimerID != NULL)
-			this->KillTimer(m_nTimerID);
+			KillTimer(m_nTimerID);
 		m_nTimerID = NULL;
 
 		m_pAvi->AppendNewFrame(hBackBitmap);
 
-		delete (m_pAvi);
+		delete m_pAvi;
 		m_pAvi = NULL;
 
 		nCount++;
 		m_Number.Format("錄製 Avi 完成 (畫格 %d)", nCount);
 		UpdateData(FALSE);
 	}
-
-	//delete [] lpData;
 }
 
 void CCaptureDlg::SaveWmvFile(void)
 {
-}
+	/*
+	CaptureBmp();
 
-void CCaptureDlg::SaveMovFile(void)
-{
+	BITMAP b = m_dib.GetBitmap();
+	CBitmap bmp;
+	bmp.CreateBitmapIndirect(&b);
+	HBITMAP hBackBitmap = (HBITMAP)bmp.GetSafeHandle();
+	*/
+	//m_dib.Draw();
+	
+	//全螢幕
+	int Width = GetSystemMetrics(SM_CXSCREEN);
+	int Height = GetSystemMetrics(SM_CYSCREEN);
+	
+	LPCTSTR lpszDrawDeviceName = "DISPLAY";
+	CDC dc;
+	dc.CreateDC(lpszDrawDeviceName, NULL, NULL, NULL);
+
+	CBitmap bmp;
+	bmp.CreateCompatibleBitmap(&dc, Width, Height);
+
+	CDC tdc;
+	tdc.CreateCompatibleDC(&dc);
+
+	CBitmap* pOld = tdc.SelectObject(&bmp);
+	tdc.BitBlt(0, 0, Width, Height, &dc, 0, 0, SRCCOPY);
+	tdc.SelectObject(pOld);
+
+	HBITMAP hBackBitmap = (HBITMAP)bmp.GetSafeHandle();
+
+	if (m_pWmv == NULL)
+	{
+		//第1次按下抓圖熱鍵,初始化WMV檔;
+		CString name;
+		SYSTEMTIME st;
+		::GetLocalTime(&st);
+
+		nCount = 1;
+		m_filecount++;
+
+		name.Format("%02i%02i%02i_%02i%02i%02i(%d).wmv",
+			st.wYear,
+			st.wMonth,
+			st.wDay,
+			st.wHour,
+			st.wMinute,
+			st.wSecond,
+			m_filecount);
+
+		name = m_Path + name;
+
+		m_pWmv = new CwmvFile(name);
+
+		m_pWmv->AppendNewFrame(hBackBitmap);
+
+		m_Number.Format("自動錄製 Wmv (畫格 %d)", nCount);
+		UpdateData(FALSE);
+
+		m_nTimerID = SetTimer(1000, 1000, NULL);
+	}
+	else if (m_WM_Message == WM_TIMER)
+	{
+		//WM_Timer觸發自動錄製;
+		m_pWmv->AppendNewFrame(hBackBitmap);
+
+		nCount++;
+		m_Number.Format("自動錄製 Wmv (畫格 %d)", nCount);
+		UpdateData(FALSE);
+	}
+	else
+	{
+		//第2次按下抓圖熱鍵, 結束;
+		if (m_nTimerID != NULL)
+			KillTimer(m_nTimerID);
+		m_nTimerID = NULL;
+
+		m_pWmv->AppendNewFrame(hBackBitmap);
+
+		delete m_pWmv;
+		m_pWmv = NULL;
+
+		nCount++;
+		m_Number.Format("錄製 Wmv 完成 (畫格 %d)", nCount);
+		UpdateData(FALSE);
+	}
 }
 
 void CCaptureDlg::OnNMCustomdrawQuality(NMHDR* pNMHDR, LRESULT* pResult)
@@ -1068,6 +1181,8 @@ void CCaptureDlg::OnTimer(UINT nIDEvent)
 
 	if (m_pAvi != NULL)
 		SaveAviFile();
+	if (m_pWmv != NULL)
+		SaveWmvFile();
 
 	CDialog::OnTimer(nIDEvent);
 }
@@ -1080,6 +1195,8 @@ BOOL CCaptureDlg::DestroyWindow()
 
 	if (m_pAvi != NULL)
 		delete (m_pAvi);
+	if (m_pWmv != NULL)
+		delete (m_pWmv);
 
 	return CDialog::DestroyWindow();
 }

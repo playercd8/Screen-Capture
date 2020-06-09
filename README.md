@@ -11,7 +11,7 @@ MIT License
 
 1.使用按鍵【ScrollLock】切換視窗模式或全螢幕模式。
 
-2. 預設使用按鍵【F9】抓圖 (可以改按鍵設定)
+2.預設使用按鍵【F9】抓圖 (可以改按鍵設定)
 
 
 ## 目前Bug
@@ -40,5 +40,12 @@ https://www.codeproject.com/Articles/3603/Classes-to-read-and-write-BMP-JPEG-and
 
 http://www.ijg.org/
 
-3.AviFile 的出處忘了
+3.CreateMovie
+
+https://www.codeproject.com/Articles/5055/Create-a-movie-from-an-HBitmap
+
+## 參考資料
+
+1.Capturing an Image - Win32 apps | Microsoft Docs
+https://docs.microsoft.com/zh-tw/windows/win32/gdi/capturing-an-image
 

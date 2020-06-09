@@ -10,8 +10,8 @@
 
 #include "TonyJpegLib/DIB.h"
 
-#include "AviFile/AviFile.h"
-//#include "AviFile/DynamicDC.h"
+#include "CreateMovie/AviFile.h"
+#include "CreateMovie/wmvFile.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CCaptureDlg dialog
@@ -81,18 +81,20 @@ public:
 
 	CDib	m_dib;
 	CAviFile* m_pAvi;
+	CwmvFile* m_pWmv;
 
 	//抓圖
 	void CaptureBmp(void);
+
 	//單張格式存檔
 	void SaveBmpFile(void);
 	void SaveJpgFile(void);
 	void SaveJppFile(void);
 	void SaveJp2File(void);
+
 	//動畫格式存檔
 	void SaveAviFile(void);
 	void SaveWmvFile(void);
-	void SaveMovFile(void);
 
 	UINT m_WM_Message;
 	UINT_PTR m_nTimerID;

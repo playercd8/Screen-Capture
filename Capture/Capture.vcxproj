@@ -124,9 +124,10 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AviFile\AviFile.cpp" />
     <ClCompile Include="Capture.cpp" />
     <ClCompile Include="CaptureDlg.cpp" />
+    <ClCompile Include="CreateMovie\AviFile.cpp" />
+    <ClCompile Include="CreateMovie\wmvFile.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -142,9 +143,11 @@
     <ResourceCompile Include="Capture.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AviFile\AviFile.h" />
     <ClInclude Include="Capture.h" />
     <ClInclude Include="CaptureDlg.h" />
+    <ClInclude Include="CreateMovie\AviFile.h" />
+    <ClInclude Include="CreateMovie\StdAfx.h" />
+    <ClInclude Include="CreateMovie\wmvFile.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="TonyJpegLib\DIB.h" />
