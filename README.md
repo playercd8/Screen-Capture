@@ -18,7 +18,9 @@ MIT License
 
 1.視窗模式抓圖可能抓到視窗邊框外?
 
-2.存AVI檔的部分故障? 
+2.存AVI檔的部分，故障? 
+
+3.存WMV檔的部分，只能存成320x240的? 謎? 
 
 ## 開發工具
 
@@ -47,5 +49,6 @@ https://www.codeproject.com/Articles/5055/Create-a-movie-from-an-HBitmap
 ## 參考資料
 
 1.Capturing an Image - Win32 apps | Microsoft Docs
+
 https://docs.microsoft.com/zh-tw/windows/win32/gdi/capturing-an-image
 

@@ -41,7 +41,7 @@ CLASS "Capture_of_Player"
 FONT 10, "細明體", 400, 0, 0x88
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,7,17,20,20
-    LTEXT           "螢幕影像抓圖工具 Capture Ver 2020.6.8.0",IDC_STATIC,47,3,161,13,SS_NOPREFIX | SS_CENTERIMAGE
+    LTEXT           "螢幕影像抓圖工具 Capture Ver 2020.6.11.0",IDC_STATIC,47,3,161,13,SS_NOPREFIX | SS_CENTERIMAGE
     LTEXT           "MIT License",IDC_STATIC,75,20,177,13,SS_CENTERIMAGE
     DEFPUSHBUTTON   "OK",IDOK,103,161,50,14,WS_GROUP
     CTEXT           "player@hotmail.com",IDC_STATIC,75,35,177,13,SS_CENTERIMAGE
@@ -85,7 +85,7 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2020,6,9,0
+ FILEVERSION 2020,6,11,0
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -104,7 +104,7 @@ BEGIN
             VALUE "Comments", "螢幕影像抓圖工具"
             VALUE "CompanyName", "Player"
             VALUE "FileDescription", "Iamge Capture Tool"
-            VALUE "FileVersion", "2020.6.9.0"
+            VALUE "FileVersion", "2020.6.11.0"
             VALUE "InternalName", "Capture"
             VALUE "LegalCopyright", "MIT License"
             VALUE "OriginalFilename", "Capture.EXE"

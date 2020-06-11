@@ -576,54 +576,52 @@ void CCaptureDlg::OnCbnSelchangeSavefileformat()
 /// <param name=""></param>
 void CCaptureDlg::CaptureBmp(void)
 {
-	LPCTSTR lpszDrawDeviceName = "DISPLAY";
-	CDC dc;
-	int Width;
-	int Height;
+	LPCTSTR lpszDrawDeviceName = _T("DISPLAY");
 	RECT WndRect;
 
 	//全螢幕
-	dc.CreateDC(lpszDrawDeviceName, NULL, NULL, NULL);
-	Width = GetSystemMetrics(SM_CXSCREEN);
-	Height = GetSystemMetrics(SM_CYSCREEN);
+	CDC dcScreen;
+	dcScreen.CreateDC(lpszDrawDeviceName, NULL, NULL, NULL);
+	int Width = GetSystemMetrics(SM_CXSCREEN);
+	int Height = GetSystemMetrics(SM_CYSCREEN);
 
 	if (::GetKeyState(VK_SCROLL) == NULL)
 	{
-		WndRect.top = 0;
-		WndRect.bottom = Height;
 		WndRect.left = 0;
+		WndRect.top = 0;
 		WndRect.right = Width;
+		WndRect.bottom = Height;
 	}
 	else
 	{
+		WINDOWINFO infoWnd;
 		//視窗
 		CWnd* pWnd = GetForegroundWindow();
 		pWnd->GetWindowRect(&WndRect);
+		//pWnd->GetClientRect(&WndRect);
 
-		if (WndRect.right < 0)
-			WndRect.right = 0;
-		if (WndRect.left > Width)
-			WndRect.left = Width;
+		if (WndRect.left < 0)
+			WndRect.left = 0;
 		if (WndRect.top < 0)
 			WndRect.top = 0;
+		if (WndRect.right > Width)
+			WndRect.right = Width;
 		if (WndRect.bottom > Height)
 			WndRect.bottom = Height;
 
-		Width = (WndRect.right - WndRect.left);
-		if (Width > GetSystemMetrics(SM_CXSCREEN))
-			Width = GetSystemMetrics(SM_CXSCREEN);
+		Width = WndRect.right - WndRect.left;
 		Height = WndRect.bottom - WndRect.top;
 	}
 
 	CBitmap bm;
-	bm.CreateCompatibleBitmap(&dc, Width, Height);
+	bm.CreateCompatibleBitmap(&dcScreen, Width, Height);
 
-	CDC tdc;
-	tdc.CreateCompatibleDC(&dc);
+	CDC dcMem;
+	dcMem.CreateCompatibleDC(&dcScreen);
 
-	CBitmap* pOld = tdc.SelectObject(&bm);
-	tdc.BitBlt(0, 0, Width, Height, &dc, WndRect.left, WndRect.top, SRCCOPY);
-	tdc.SelectObject(pOld);
+	CBitmap* pOld = dcMem.SelectObject(&bm);
+	dcMem.BitBlt(0, 0, Width, Height, &dcScreen, WndRect.left, WndRect.top, SRCCOPY);
+	dcMem.SelectObject(pOld);
 
 	BITMAP btm;
 	bm.GetBitmap(&btm);
@@ -645,7 +643,7 @@ void CCaptureDlg::CaptureBmp(void)
 
 	if (btm.bmBitsPixel > 16)
 	{
-		GetDIBits(dc, bm, 0, bih.biHeight, lpData, (BITMAPINFO*)&bih, DIB_RGB_COLORS);
+		GetDIBits(dcScreen, bm, 0, bih.biHeight, lpData, (BITMAPINFO*)&bih, DIB_RGB_COLORS);
 	}
 	else
 	{
@@ -688,7 +686,7 @@ void CCaptureDlg::CaptureBmp(void)
 			RgbIndex = 0;
 
 		PALETTEENTRY chColorTable[256];
-		::GetSystemPaletteEntries(dc.m_hDC, 0, 256, chColorTable);
+		::GetSystemPaletteEntries(dcScreen.m_hDC, 0, 256, chColorTable);
 
 		for (int y = 0; y < btm.bmHeight; y++)
 		{
@@ -708,7 +706,7 @@ void CCaptureDlg::CaptureBmp(void)
 			}
 
 			chBuffer += btm.bmWidthBytes,
-			chRgbBuffer += bmWidthBytes2;
+				chRgbBuffer += bmWidthBytes2;
 			ColorIndex = 0;
 			RgbIndex = 0;
 		}
@@ -782,7 +780,7 @@ void CCaptureDlg::CaptureBmp(void)
 				}
 
 				chBuffer += btm.bmWidthBytes,
-				chRgbBuffer += bmWidthBytes2;
+					chRgbBuffer += bmWidthBytes2;
 				HiColorIndex = 0;
 				RgbIndex = 0;
 			}
@@ -808,7 +806,7 @@ void CCaptureDlg::CaptureBmp(void)
 				}
 
 				chBuffer += btm.bmWidthBytes,
-				chRgbBuffer += bmWidthBytes2;
+					chRgbBuffer += bmWidthBytes2;
 				HiColorIndex = 0;
 				RgbIndex = 0;
 			}
@@ -859,7 +857,7 @@ void CCaptureDlg::CaptureBmp(void)
 			}
 
 			chBuffer += btm.bmWidthBytes,
-			chRgbBuffer += bmWidthBytes2;
+				chRgbBuffer += bmWidthBytes2;
 			ColorIndex = 0;
 			RgbIndex = 0;
 		}
@@ -1001,24 +999,47 @@ void CCaptureDlg::SaveAviFile(void)
 	//全螢幕
 	int Width = GetSystemMetrics(SM_CXSCREEN);
 	int Height = GetSystemMetrics(SM_CYSCREEN);
+	int Width2 = Width, Height2 = Height;
+	BOOL IsBitBlt = FALSE;
+	if ((((Width % 16) == 0) && ((Height % 16) == 0)) && (((Width * 9 / 16) == Height) || ((Width * 3 / 4) == Height))) {
+		IsBitBlt = TRUE;
+		Width2 = Width;
+		Height = Height;
+	}
+	else {
+		float R1 = float(Width) / float(Height);
 
-	LPCTSTR lpszDrawDeviceName = "DISPLAY";
-	CDC dc;
-	dc.CreateDC(lpszDrawDeviceName, NULL, NULL, NULL);
+		if ((R1 >= (16.0f / 9.0f - 0.2f)) && (R1 <= (16.0f / 9.0f + 0.2f))) {
+			Width2 = 1280;
+			Height2 = 720;
+		}
+		else if ((R1 >= (4.0f / 3.0f - 0.2f)) && (R1 <= (4.0f / 3.0f + 0.2f))) {
+			Width2 = 640;
+			Height2 = 480;
+		}
+	}
 
-	HBITMAP hBackBitmap;
+	LPCTSTR lpszDrawDeviceName = _T("DISPLAY");
+	CDC dcScreen;
+	dcScreen.CreateDC(lpszDrawDeviceName, NULL, NULL, NULL);
+
 	CBitmap bmp;
-	bmp.CreateCompatibleBitmap(&dc, Width, Height);
+	bmp.CreateCompatibleBitmap(&dcScreen, Width2, Height2);
 
-	CDC tdc;
-	tdc.CreateCompatibleDC(&dc);
+	CDC dcMem;
+	dcMem.CreateCompatibleDC(&dcScreen);
 
-	CBitmap* pOld = tdc.SelectObject(&bmp);
-	tdc.BitBlt(0, 0, Width, Height, &dc, 0, 0, SRCCOPY);
-	tdc.SelectObject(pOld);
+	CBitmap* pOld = dcMem.SelectObject(&bmp);
+	if (IsBitBlt) {
+		dcMem.BitBlt(0, 0, Width2, Height2, &dcScreen, 0, 0, SRCCOPY);
+	}
+	else {
+		dcMem.SetStretchBltMode(HALFTONE);
+		dcMem.StretchBlt(0, 0, Width2, Height2, &dcScreen, 0, 0, Width, Height, SRCCOPY);
+	}
+	dcMem.SelectObject(pOld);
 
-	hBackBitmap = (HBITMAP)bmp.GetSafeHandle();
-	
+	HBITMAP hBackBitmap = (HBITMAP)bmp.GetSafeHandle();
 
 	if (m_pAvi == NULL)
 	{
@@ -1044,7 +1065,7 @@ void CCaptureDlg::SaveAviFile(void)
 		m_pAvi = new CAviFile(name);
 
 		m_pAvi->AppendNewFrame(hBackBitmap);
-		
+
 		m_Number.Format("自動錄製 Ani (畫格 %d)", nCount);
 		UpdateData(FALSE);
 
@@ -1077,35 +1098,54 @@ void CCaptureDlg::SaveAviFile(void)
 	}
 }
 
+/// <summary>
+/// 儲存成 .wmv 檔
+/// </summary>
+/// <param name=""></param>
 void CCaptureDlg::SaveWmvFile(void)
 {
-	/*
-	CaptureBmp();
-
-	BITMAP b = m_dib.GetBitmap();
-	CBitmap bmp;
-	bmp.CreateBitmapIndirect(&b);
-	HBITMAP hBackBitmap = (HBITMAP)bmp.GetSafeHandle();
-	*/
-	//m_dib.Draw();
-	
 	//全螢幕
 	int Width = GetSystemMetrics(SM_CXSCREEN);
 	int Height = GetSystemMetrics(SM_CYSCREEN);
-	
-	LPCTSTR lpszDrawDeviceName = "DISPLAY";
-	CDC dc;
-	dc.CreateDC(lpszDrawDeviceName, NULL, NULL, NULL);
+	int Width2 = Width, Height2 = Height;
+	BOOL IsBitBlt = FALSE;
+	if ((((Width % 16) == 0) && ((Height % 16) == 0)) &&(((Width * 9 / 16) == Height) || ((Width * 3 / 4) == Height))) {
+		IsBitBlt = TRUE;
+		Width2 = Width;
+		Height = Height;
+	}
+	else {
+		float R1 = float(Width) / float(Height);
+
+		if ((R1 >= (16.0f / 9.0f - 0.2f)) && (R1 <= (16.0f / 9.0f + 0.2f))) {
+			Width2 = 1280;
+			Height2 = 720;
+		}
+		else if ((R1 >= (4.0f / 3.0f - 0.2f)) && (R1 <= (4.0f / 3.0f + 0.2f))) {
+			Width2 = 640;
+			Height2 = 480;
+		}
+	}
+
+	LPCTSTR lpszDrawDeviceName = _T("DISPLAY");
+	CDC dcScreen;
+	dcScreen.CreateDC(lpszDrawDeviceName, NULL, NULL, NULL);
 
 	CBitmap bmp;
-	bmp.CreateCompatibleBitmap(&dc, Width, Height);
+	bmp.CreateCompatibleBitmap(&dcScreen, Width2, Height2);
 
-	CDC tdc;
-	tdc.CreateCompatibleDC(&dc);
+	CDC dcMem;
+	dcMem.CreateCompatibleDC(&dcScreen);
 
-	CBitmap* pOld = tdc.SelectObject(&bmp);
-	tdc.BitBlt(0, 0, Width, Height, &dc, 0, 0, SRCCOPY);
-	tdc.SelectObject(pOld);
+	CBitmap* pOld = dcMem.SelectObject(&bmp);
+	if (IsBitBlt) {
+		dcMem.BitBlt(0, 0, Width2, Height2, &dcScreen, 0, 0, SRCCOPY);
+	}
+	else {
+		dcMem.SetStretchBltMode(HALFTONE);
+		dcMem.StretchBlt(0, 0, Width2, Height2, &dcScreen, 0, 0, Width, Height, SRCCOPY);
+	}
+	dcMem.SelectObject(pOld);
 
 	HBITMAP hBackBitmap = (HBITMAP)bmp.GetSafeHandle();
 
@@ -1130,14 +1170,14 @@ void CCaptureDlg::SaveWmvFile(void)
 
 		name = m_Path + name;
 
-		m_pWmv = new CwmvFile(name);
+		m_pWmv = new CwmvFile(name, WMProfile_V80_1400NTSCVideo, 1);
 
 		m_pWmv->AppendNewFrame(hBackBitmap);
 
 		m_Number.Format("自動錄製 Wmv (畫格 %d)", nCount);
 		UpdateData(FALSE);
 
-		m_nTimerID = SetTimer(1000, 1000, NULL);
+		m_nTimerID = SetTimer(2000, 1000, NULL);
 	}
 	else if (m_WM_Message == WM_TIMER)
 	{
@@ -1179,10 +1219,14 @@ void CCaptureDlg::OnTimer(UINT nIDEvent)
 	// TODO: 在此加入您的訊息處理常式程式碼和 (或) 呼叫預設值
 	this->m_WM_Message = WM_TIMER;
 
-	if (m_pAvi != NULL)
-		SaveAviFile();
-	if (m_pWmv != NULL)
-		SaveWmvFile();
+	if (nIDEvent == 1000) {
+		if (m_pAvi != NULL)
+			SaveAviFile();
+	}
+	if (nIDEvent == 2000) {
+		if (m_pWmv != NULL)
+			SaveWmvFile();
+	}
 
 	CDialog::OnTimer(nIDEvent);
 }
@@ -1191,7 +1235,7 @@ BOOL CCaptureDlg::DestroyWindow()
 {
 	// TODO: 在此加入特定的程式碼和 (或) 呼叫基底類別
 	if (m_nTimerID != NULL)
-		this->KillTimer(m_nTimerID);
+		KillTimer(m_nTimerID);
 
 	if (m_pAvi != NULL)
 		delete (m_pAvi);

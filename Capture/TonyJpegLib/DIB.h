@@ -12,7 +12,7 @@ public:
 	CDib();
 	~CDib();
 
-	BITMAP GetBitmap();
+	//BITMAP GetBitmap();
 
 	BOOL Load(const char*);
 	BOOL Save(const char*);
